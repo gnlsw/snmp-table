@@ -34,3 +34,7 @@ gcc testMain.o subsTrcTable.o -o trace -lnetsnmpmibs -lnetsnmpagent -lnetsnmp -l
       agentXSocket    tcp:localhost:705
    b. 可执行文件使用root权限执行
 
+5. walk测试
+   snmpwalk -v 2c -c public localhost 1.3.6.1.4.1.88888.1
+   对于非索引列，逐次回调获得返回值
+
