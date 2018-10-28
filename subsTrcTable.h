@@ -10,6 +10,13 @@ void init_subsTrcTable(void);
 void initialize_table_subsTrcTable(void);
 Netsnmp_Node_Handler subsTrcTable_handler;
 
+netsnmp_tdata_row *
+subsTrcTable_createEntry(netsnmp_tdata *table_data
+                 , long  subsTrcIdType
+                 , char* subsTrcIdName
+                 , size_t subsTrcIdName_len
+                );
+
 #define SUBSTRCTABLE_TIMEOUT  60
 #define NAME_MAX_LEN          15
 

@@ -27,6 +27,8 @@ initialize_table_subsTrcTable(void)
     netsnmp_tdata                   *table_data;
     netsnmp_table_registration_info *table_info;
 
+    char subsTrcIdName[NAME_MAX_LEN] = "123456789";
+
     DEBUGMSGTL(("subsTrcTable:init", "initializing table subsTrcTable\n"));
     printf("subsTrcTable:init, initializing table subsTrcTable\n");
 
@@ -47,7 +49,7 @@ initialize_table_subsTrcTable(void)
         snmp_log(LOG_ERR,"error creating table info for subsTrcTable\n");
         return;
     }
-    
+
     netsnmp_table_helper_add_indexes(table_info,
                            ASN_INTEGER,  /* index: subsTrcIdType */
                            ASN_OCTET_STR,  /* index: subsTrcIdName */
@@ -55,8 +57,11 @@ initialize_table_subsTrcTable(void)
 
     table_info->min_column = COLUMN_SUBSTRCLEVEL;
     table_info->max_column = COLUMN_SUBSTRCROWSTATUS;
+    
+    netsnmp_tdata_register( reg, table_data, table_info );
 
     /* Initialise the contents of the table here */
+    subsTrcTable_createEntry(table_data, 1, subsTrcIdName, strlen(subsTrcIdName));
 }
 
     /* Typical data structure for a row entry */
