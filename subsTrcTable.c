@@ -42,6 +42,12 @@ initialize_table_subsTrcTable(void)
         return;
     }
 
+    table_info = SNMP_MALLOC_TYPEDEF( netsnmp_table_registration_info );
+    if (NULL == table_info) {
+        snmp_log(LOG_ERR,"error creating table info for subsTrcTable\n");
+        return;
+    }
+    
     netsnmp_table_helper_add_indexes(table_info,
                            ASN_INTEGER,  /* index: subsTrcIdType */
                            ASN_OCTET_STR,  /* index: subsTrcIdName */
