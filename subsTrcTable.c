@@ -28,6 +28,7 @@ initialize_table_subsTrcTable(void)
     netsnmp_table_registration_info *table_info;
 
     DEBUGMSGTL(("subsTrcTable:init", "initializing table subsTrcTable\n"));
+    printf("subsTrcTable:init, initializing table subsTrcTable\n");
 
     reg = netsnmp_create_handler_registration(
               "subsTrcTable",     subsTrcTable_handler,
@@ -91,6 +92,8 @@ subsTrcTable_createEntry(netsnmp_tdata *table_data
     row->data = entry;
 
     DEBUGMSGT(("subsTrcTable:entry:create", "row 0x%lx\n", (uintptr_t)row));
+    printf("subsTrcTable:entry:create, row 0x%lx\n", (uintptr_t)row);
+
     entry->subsTrcIdType = subsTrcIdType;
     netsnmp_tdata_row_add_index( row, ASN_INTEGER,
                                  &(entry->subsTrcIdType),
@@ -114,6 +117,7 @@ subsTrcTable_removeEntry(netsnmp_tdata     *table_data,
         return;    /* Nothing to remove */
 
     DEBUGMSGT(("subsTrcTable:entry:remove", "row 0x%lx\n", (uintptr_t)row));
+    printf("subsTrcTable:entry:remove, row 0x%lx\n", (uintptr_t)row);
 
     entry = (struct subsTrcTable_entry *)row->data;
     SNMP_FREE( entry );   /* XXX - release any other internal resources */
@@ -140,6 +144,7 @@ subsTrcTable_handler(
     int                         ret;
 
     DEBUGMSGTL(("subsTrcTable:handler", "Processing request (%d)\n", reqinfo->mode));
+    printf("subsTrcTable:handler, Processing request (%d)\n", reqinfo->mode);
 
     switch (reqinfo->mode) {
         /*
