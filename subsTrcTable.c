@@ -90,7 +90,7 @@ subsTrcTable_createEntry(netsnmp_tdata *table_data
     }
     row->data = entry;
 
-    DEBUGMSGT(("subsTrcTable:entry:create", "row 0x%x\n", (uintptr_t)row));
+    DEBUGMSGT(("subsTrcTable:entry:create", "row 0x%lx\n", (uintptr_t)row));
     entry->subsTrcIdType = subsTrcIdType;
     netsnmp_tdata_row_add_index( row, ASN_INTEGER,
                                  &(entry->subsTrcIdType),
@@ -113,7 +113,7 @@ subsTrcTable_removeEntry(netsnmp_tdata     *table_data,
     if (!row)
         return;    /* Nothing to remove */
 
-    DEBUGMSGT(("subsTrcTable:entry:remove", "row 0x%x\n", (uintptr_t)row));
+    DEBUGMSGT(("subsTrcTable:entry:remove", "row 0x%lx\n", (uintptr_t)row));
 
     entry = (struct subsTrcTable_entry *)row->data;
     SNMP_FREE( entry );   /* XXX - release any other internal resources */
