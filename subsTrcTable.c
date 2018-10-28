@@ -56,7 +56,7 @@ initialize_table_subsTrcTable(void)
 struct subsTrcTable_entry {
     /* Index values */
     long subsTrcIdType;
-    char subsTrcIdName[NNN];
+    char subsTrcIdName[NAME_MAX_LEN];
     size_t subsTrcIdName_len;
 
     /* Column values */

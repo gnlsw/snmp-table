@@ -11,6 +11,7 @@ void initialize_table_subsTrcTable(void);
 Netsnmp_Node_Handler subsTrcTable_handler;
 
 #define SUBSTRCTABLE_TIMEOUT  60
+#define NAME_MAX_LEN          15
 
 /* column number definitions for table subsTrcTable */
        #define COLUMN_SUBSTRCIDTYPE		1
