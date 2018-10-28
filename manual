@@ -14,19 +14,18 @@
 
 
 2. 使用mib2c生成C文件，net-snmp支持多种生成方式，当前采用mib2c.table_data.conf，具体命令为
-env MIBS="+TEST-TABLE-MIB" mib2c -c mib2c.table_data.conf subsTrcTable
-此时回提示一个选择，当前考虑选择2
+   env MIBS="+TEST-TABLE-MIB" mib2c -c mib2c.table_data.conf subsTrcTable
+   此时回提示一个选择，当前考虑选择2
 
 
 3. 以agent方式运行，生成可执行文件的方式有两种
-case 1:
-net-snmp-config --compile-subagent subs_trace subsTrcTable.c
+   case 1:
+      net-snmp-config --compile-subagent subs_trace subsTrcTable.c
 
-
-case 2:
-gcc -g -c testMain.c
-gcc -g -c subsTrcTable.c
-gcc testMain.o subsTrcTable.o -o trace -lnetsnmpmibs -lnetsnmpagent -lnetsnmp -lnetsnmpmibs
+   case 2:
+      gcc -g -c testMain.c
+      gcc -g -c subsTrcTable.c
+      gcc testMain.o subsTrcTable.o -o trace -lnetsnmpmibs -lnetsnmpagent -lnetsnmp -lnetsnmpmibs
 
 4. 执行可执行文件，需要注意两点
    a. snmpd配置文件支持agent
@@ -36,5 +35,20 @@ gcc testMain.o subsTrcTable.o -o trace -lnetsnmpmibs -lnetsnmpagent -lnetsnmp -l
 
 5. walk测试
    snmpwalk -v 2c -c public localhost 1.3.6.1.4.1.88888.1
-   对于非索引列，逐次回调获得返回值
+   index列由subsTrcIdType和subsTrcIdName组成，分别为1和"123456789"，字符串对应的ascii为49 50 51 ... 57
+   非index列，逐次回调获得返回值，返回结果如下，其中
+   iso.3.6.1.4.1.88888.1.1.3.1.9.49.50.51.52.53.54.55.56.57 = INTEGER: 0
+   iso.3.6.1.4.1.88888.1.1.4.1.9.49.50.51.52.53.54.55.56.57 = INTEGER: 0
+   iso.3.6.1.4.1.88888.1.1.5.1.9.49.50.51.52.53.54.55.56.57 = INTEGER: 0
+
+
+6. 修改已有记录的某一个变量
+   基于配置文件启动snmpd的方式，暂时不支持修改，原因不知道。使用命令行启动snmpd，命令行为如下
+   snmpd -f -Lo -C --rwcommunity=public --master=agentx --agentXSocket=tcp:localhost:705
+   修改非索引列，命令如下
+   snmpset -v 2c -c public localhost  1.3.6.1.4.1.88888.1.1.4.1.9.49.50.51.52.53.54.55.56.57   i 1
+
+
+7. 在该表创建新的记录，index列subsTrcIdType为0，subsTrcIdName为"223456789"，字符串对应的ascii为50 50 51 ... 57
+   命令待确认
 
