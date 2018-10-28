@@ -1,0 +1,36 @@
+1. 编写TEST-TABLE-MIB.txt，将文件放到/usr/share/snmp/mibs/，执行snmptranslate -Tp -IR TEST-TABLE-MIB::subsTrcTable测试文件正确性，输出结果如下。
++--subsTrcTable(1)
+   |
+   +--subsTrcEntry(1)
+      |  Index: subsTrcIdType, subsTrcIdName
+      |
+      +-- ---- Integer32 subsTrcIdType(1)
+      +-- ---- String    subsTrcIdName(2)
+      +-- -RW- Integer32 subsTrcLevel(3)
+      +-- -RW- Integer32 subsTrcType(4)
+      +-- -RW- EnumVal   subsTrcRowStatus(5)
+               Textual Convention: RowStatus
+               Values: active(1), notInService(2), notReady(3), createAndGo(4), createAndWait(5), destroy(6)
+
+
+2. 使用mib2c生成C文件，net-snmp支持多种生成方式，当前采用mib2c.table_data.conf，具体命令为
+env MIBS="+TEST-TABLE-MIB" mib2c -c mib2c.table_data.conf subsTrcTable
+此时回提示一个选择，当前考虑选择2
+
+
+3. 以agent方式运行，生成可执行文件的方式有两种
+case 1:
+net-snmp-config --compile-subagent subs_trace subsTrcTable.c
+
+
+case 2:
+gcc -g -c testMain.c
+gcc -g -c subsTrcTable.c
+gcc testMain.o subsTrcTable.o -o trace -lnetsnmpmibs -lnetsnmpagent -lnetsnmp -lnetsnmpmibs
+
+4. 执行可执行文件，需要注意两点
+   a. snmpd配置文件支持agent
+      master          agentx
+      agentXSocket    tcp:localhost:705
+   b. 可执行文件使用root权限执行
+
