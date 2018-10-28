@@ -9,8 +9,7 @@
 void init_subsTrcTable(void);
 void initialize_table_subsTrcTable(void);
 Netsnmp_Node_Handler subsTrcTable_handler;
-NetsnmpCacheLoad subsTrcTable_load;
-NetsnmpCacheFree subsTrcTable_free;
+
 #define SUBSTRCTABLE_TIMEOUT  60
 
 /* column number definitions for table subsTrcTable */

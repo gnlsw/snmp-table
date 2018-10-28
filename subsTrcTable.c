@@ -26,7 +26,6 @@ initialize_table_subsTrcTable(void)
     netsnmp_handler_registration    *reg;
     netsnmp_tdata                   *table_data;
     netsnmp_table_registration_info *table_info;
-    netsnmp_cache                   *cache;
 
     DEBUGMSGTL(("subsTrcTable:init", "initializing table subsTrcTable\n"));
 
@@ -41,19 +40,7 @@ initialize_table_subsTrcTable(void)
         snmp_log(LOG_ERR,"error creating tdata table for subsTrcTable\n");
         return;
     }
-    cache = netsnmp_cache_create(SUBSTRCTABLE_TIMEOUT,
-                                  subsTrcTable_load, subsTrcTable_free,
-                                  subsTrcTable_oid, subsTrcTable_oid_len);
-    if (NULL == cache) {
-        snmp_log(LOG_ERR,"error creating cache for subsTrcTable\n");
-    }
-    else
-        cache->magic = (void *)table_data;
-    table_info = SNMP_MALLOC_TYPEDEF( netsnmp_table_registration_info );
-    if (NULL == table_info) {
-        snmp_log(LOG_ERR,"error creating table info for subsTrcTable\n");
-        return;
-    }
+
     netsnmp_table_helper_add_indexes(table_info,
                            ASN_INTEGER,  /* index: subsTrcIdType */
                            ASN_OCTET_STR,  /* index: subsTrcIdName */
@@ -61,11 +48,6 @@ initialize_table_subsTrcTable(void)
 
     table_info->min_column = COLUMN_SUBSTRCLEVEL;
     table_info->max_column = COLUMN_SUBSTRCROWSTATUS;
-    
-    netsnmp_tdata_register( reg, table_data, table_info );
-    if (cache) 
-        netsnmp_inject_handler_before( reg, netsnmp_cache_handler_GET(cache),
-                                       TABLE_TDATA_NAME);
 
     /* Initialise the contents of the table here */
 }
@@ -140,59 +122,6 @@ subsTrcTable_removeEntry(netsnmp_tdata     *table_data,
         netsnmp_tdata_remove_and_delete_row( table_data, row );
     else
         netsnmp_tdata_delete_row( row );    
-}
-
-/* Example cache handling - set up table_data list from a suitable file */
-int
-subsTrcTable_load( netsnmp_cache *cache, void *vmagic ) {
-    netsnmp_tdata     *table = (netsnmp_tdata *)vmagic;
-    netsnmp_tdata_row *row;
-    struct subsTrcTable_entry *this;
-    FILE *fp;
-    char buf[STRMAX];
-    long  subsTrcIdType;
-    char* subsTrcIdName;
-    size_t subsTrcIdName_len;
-
-    /* The basic load routine template assumes that the data to
-       be reported is held in a file - with one row of the file
-       for each row of the table.
-          If your data is available via a different API, you
-       should amend this initial block (and the control of the
-       'while' loop) accordingly.
-          'XXX' marks places where the template is incomplete and
-       code will definitely need to be added. */
-
-    fp = fopen( "/data/for/subsTrcTable", "r" );
-    if ( !fp ) {
-        return -1;
-    }
-    while ( fgets( buf, STRMAX, fp )) {
-        /* XXX - Unpick 'buf' to extract the individual field values
-                 (or at least the index values for this row) ... */
-        row = subsTrcTable_createEntry(table
-                         , subsTrcIdType
-                         , subsTrcIdName
-                         , subsTrcIdName_len
-                        );
-        if (row == NULL)
-            continue;
-        this = (struct subsTrcTable_entry *)row->entry;
-        /* XXX - ... and then populate the 'this' data structure with
-                 column values (typically) extracted from 'buf' above */
-    }
-    fclose(fp);
-    return 0;  /* OK */
-}
-
-void
-subsTrcTable_free( netsnmp_cache *cache, void *vmagic ) {
-    netsnmp_tdata     *table = (netsnmp_tdata *)vmagic;
-    netsnmp_tdata_row *this;
-
-    while ((this = netsnmp_tdata_get_first_row(table))) {
-        netsnmp_tdata_remove_and_delete_row(table, this);
-    }
 }
 
 /** handles requests for the subsTrcTable table */
