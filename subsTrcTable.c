@@ -272,7 +272,7 @@ subsTrcTable_handler(
                 switch (*request->requestvb->val.integer) {
                 case RS_ACTIVE:
                 case RS_CREATEANDGO:
-                    if (/* XXX */) {
+                    if (0/* XXX */) {
                         netsnmp_set_request_error( reqinfo, request,
                                                    SNMP_ERR_INCONSISTENTVALUE );
                         return SNMP_ERR_NOERROR;
