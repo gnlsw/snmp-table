@@ -1,0 +1,83 @@
+TEST-TABLE-MIB DEFINITIONS ::= BEGIN
+
+--
+-- Example MIB objects for agent module example implementations
+--
+
+IMPORTS
+    enterprises                             FROM RFC1155-SMI
+    MODULE-IDENTITY, OBJECT-TYPE, Integer32,
+    NOTIFICATION-TYPE                       FROM SNMPv2-SMI
+    SnmpAdminString                         FROM SNMP-FRAMEWORK-MIB
+    netSnmp                                 FROM NET-SNMP-MIB
+    RowStatus, StorageType                  FROM SNMPv2-TC
+    InetAddressType, InetAddress            FROM INET-ADDRESS-MIB
+;
+
+
+wsl             OBJECT IDENTIFIER ::= { enterprises 88888 }
+-- subsTrcTable    OBJECT IDENTIFIER ::= { wsl 1}
+
+--
+-- user trace table
+--
+
+subsTrcTable OBJECT-TYPE
+    SYNTAX          SEQUENCE OF SubsTrcEntry
+    MAX-ACCESS      not-accessible
+    STATUS          current
+    DESCRIPTION     "An example table for user trace"
+    ::= { wsl 1 }
+
+subsTrcEntry OBJECT-TYPE
+    SYNTAX          SubsTrcEntry
+    MAX-ACCESS      not-accessible
+    STATUS          current
+    DESCRIPTION     "user trace type"
+    INDEX           { subsTrcIdType, subsTrcIdName }
+    ::= { subsTrcTable 1 }
+
+SubsTrcEntry ::= SEQUENCE {
+    subsTrcIdType           Integer32,
+    subsTrcIdName           OCTET STRING,
+    subsTrcLevel            Integer32,
+    subsTrcType             Integer32,
+    subsTrcRowStatus        RowStatus
+}
+
+subsTrcIdType OBJECT-TYPE
+    SYNTAX          Integer32
+    MAX-ACCESS      not-accessible
+    STATUS          current
+    DESCRIPTION     "user id type, imsi or isdn"
+    ::= { subsTrcEntry 1 }
+
+subsTrcIdName OBJECT-TYPE
+    SYNTAX          OCTET STRING
+    MAX-ACCESS      not-accessible
+    STATUS          current
+    DESCRIPTION     "user id, imsi or isdn"
+    ::= { subsTrcEntry 2 }
+
+subsTrcLevel OBJECT-TYPE
+    SYNTAX          Integer32
+    MAX-ACCESS      read-write
+    STATUS          current
+    DESCRIPTION     "user log level"
+    ::= { subsTrcEntry 3 }
+
+subsTrcType OBJECT-TYPE
+    SYNTAX          Integer32
+    MAX-ACCESS      read-write
+    STATUS          current
+    DESCRIPTION     "user trace report type, xml or pcapng"
+    ::= { subsTrcEntry 4 }
+
+subsTrcRowStatus OBJECT-TYPE
+    SYNTAX          RowStatus
+    MAX-ACCESS      read-write
+    STATUS          current
+    DESCRIPTION     "The status of this row."
+    ::= { subsTrcEntry 5 }
+
+END
